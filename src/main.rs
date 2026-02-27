@@ -10,6 +10,7 @@ use rodio::cpal::BufferSize;
 use rodio::cpal::traits::HostTrait;
 use rodio::queue::queue;
 use rodio::{Decoder, Source};
+use rppal::gpio::Gpio;
 use tokio::sync::watch::{self, Receiver, Sender};
 use tokio::task::JoinHandle;
 use tokio::time::sleep;
@@ -212,14 +213,22 @@ impl Drop for Sink {
 #[clap(author, version, about, long_about = None)]
 struct Cli {
     file: PathBuf,
+
+    #[clap(short, long)]
+    gpio: bool,
 }
 
 #[tokio::main]
 async fn main() {
     let cli = Cli::parse();
 
-    let mut sink = Sink::new();
+    // For my amplifier turning on
+    if cli.gpio {
+        let mut pin = Gpio::new().unwrap().get(23).unwrap().into_output();
+        pin.set_high();
+    }
 
+    let mut sink = Sink::new();
     sink.query_track(&cli.file);
 
     loop {
