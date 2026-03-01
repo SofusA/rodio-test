@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-rodio = { version = "0.22", default-features = false, features = ["flac", "playback"] }
+rodio = { git = "https://github.com/RustAudio/rodio", default-features = false, features = ["flac", "playback"] }
 parking_lot = "0.12.5"
 tokio = { version = "1", features = ["full"] }
 clap = { version = "4", features = ["derive", "env"] }
